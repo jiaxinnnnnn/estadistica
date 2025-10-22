@@ -1,9 +1,9 @@
-install.packages("data.table")  #instalar paquete necesario
+install.packages("data.table")    #instalar paquete necesario
 
-setwd("~/Documents") #MI DIRECTORIO, CAMBIA AL ADECUADO
+
 
 library(data.table)
-datos <- fread("Top_1000_Highest_Grossing_Movies.csv") #importar con formateo automatico
+datos <- fread("Top_1000_Highest_Grossing_Movies.csv")   #importar con formateo automatico
 datos
 
 #ORGANIZAR DATOS
@@ -12,13 +12,13 @@ datos_puntuacion = datos$`Movie Rating`
 datos_puntuacion #todos los datos de puntuaciones(1-10) en float
 
 datos_puntuacion_duracion_larga = datos[(datos$Duration >= "120")]$`Movie Rating`
-datos_puntuacion_duracion_larga # todos los datos de puntuaciones que cumplen con duracion>=120 min
+datos_puntuacion_duracion_larga   # todos los datos de puntuaciones que cumplen con duracion>=120 min
 
 datos_puntuacion_duracion_corta = datos[(datos$Duration < "120")]$`Movie Rating`
-datos_puntuacion_duracion_corta # todos los datos de puntuaciones que cumplen con duracion<120 min
+datos_puntuacion_duracion_corta   # todos los datos de puntuaciones que cumplen con duracion<120 min
 
-length(datos_puntuacion_duracion_larga) # numero de datos(pelis que duran mas de 120)
-length(datos_puntuacion_duracion_corta) # numero de datos(pelis que duran menos de 120)
+length(datos_puntuacion_duracion_larga)   # numero de datos(pelis que duran mas de 120)
+length(datos_puntuacion_duracion_corta)   # numero de datos(pelis que duran menos de 120)
 
 #CALCULAR MEDIDAS ESTADISTICAS
 
@@ -110,7 +110,7 @@ cumsum(frecuencia_abs_puntuacion)  #frecuencia absoluta acumulada
 frecuencia_relativa_puntuacion= round(prop.table(frecuencia_abs_puntuacion),2) #frecuencia relativa
 cumsum(frecuencia_relativa_puntuacion)  #frecuencia relativa acumulada
 h=hist(datos_puntuacion,breaks=c(0,4,6,8,10), plot=FALSE) #listas de informacion
-h$mids  #punto medio de cada intervalo definido por break
+h$mids  #punto medio de cada intervalo definido por break (marcas de clase)
 
 
 frecuencia_abs_puntuacion_duracion_larga= table(cut(datos_puntuacion_duracion_larga, breaks=c(0,4,6,8,10), right=FALSE, include.lowest=TRUE)) #frecuencia absoluta
@@ -118,7 +118,7 @@ cumsum(frecuencia_abs_puntuacion_duracion_larga)  #frecuencia absoluta acumulada
 frecuencia_relativa_puntuacion_larga= round(prop.table(frecuencia_abs_puntuacion_duracion_larga),2) #frecuencia relativa
 cumsum(frecuencia_relativa_puntuacion_larga)  #frecuencia relativa acumulada
 h=hist(datos_puntuacion_duracion_larga,breaks=c(0,4,6,8,10), plot=FALSE)#listas de informacion
-h$mids  #punto medio de cada intervalo definido por break
+h$mids  #punto medio de cada intervalo definido por break (marcas de clase)
 
 
 frecuencia_abs_puntuacion_corta= table(cut(datos_puntuacion_duracion_corta, breaks=c(0,4,6,8,10), right=FALSE, include.lowest=TRUE)) #frecuencia absoluta
@@ -126,7 +126,7 @@ cumsum(frecuencia_abs_puntuacion_corta)  #frecuencia absoluta acumulada
 frecuencia_relativa_puntuacion_corta= round(prop.table(frecuencia_abs_puntuacion_corta),2) #frecuencia relativa
 cumsum(frecuencia_relativa_puntuacion_corta)  #frecuencia relativa acumulada
 h=hist(datos_puntuacion_duracion_corta,breaks=c(0,4,6,8,10), plot=FALSE)#listas de informacion
-h$mids  #punto medio de cada intervalo definido por break
+h$mids  #punto medio de cada intervalo definido por break (marcas de clase)
 
 
 
@@ -136,8 +136,8 @@ par(mfrow=c(1,3))# separacion del "canvas"
 
 #diagrama de cajas y bigotes
 boxplot(datos_puntuacion,ylim=c(0,10), main="Todos") 
-boxplot(datos_puntuacion_duracion_larga,ylim=c(0,10), main="Los que duran mas de 120 min") 
-boxplot(datos_puntuacion_duracion_corta, ylim=c(0,10), main="Los que duran menos de 120 min") 
+boxplot(datos_puntuacion_duracion_larga,ylim=c(0,10), main="Duran mas de 120 min") 
+boxplot(datos_puntuacion_duracion_corta, ylim=c(0,10), main="Duran menos de 120 min") 
 
 
 par(mfrow=c(3,1)) #separacion del "canvas"
@@ -150,3 +150,20 @@ abline(v=mean(datos_puntuacion_duracion_larga), lwd=2, lty=3, col="blue")
 hist(datos_puntuacion_duracion_corta, main="Los que duran menos de 120 min") 
 abline(v=mean(datos_puntuacion_duracion_corta), lwd=2, lty=3, col="green") 
 
+#histograma de densidad
+hist(datos_puntuacion, breaks=c(0,4,6,8,10),labels=TRUE, main="Todos") 
+abline(v=mean(datos_puntuacion), lwd=2, lty=3, col="darkred") # linea que representa la media
+hist(datos_puntuacion_duracion_larga, breaks=c(0,4,6,8,10),labels=TRUE, main="Los que duran mas de 120 min") 
+abline(v=mean(datos_puntuacion_duracion_larga), lwd=2, lty=3, col="blue") 
+hist(datos_puntuacion_duracion_corta, breaks=c(0,4,6,8,10),labels=TRUE, main="Los que duran menos de 120 min") 
+abline(v=mean(datos_puntuacion_duracion_corta), lwd=2, lty=3, col="green") 
+
+
+#puntuaciones menores que la media
+sum(datos_puntuacion < mean(datos_puntuacion)) 
+sum(datos_puntuacion_duracion_larga < mean(datos_puntuacion_duracion_larga)) 
+sum(datos_puntuacion_duracion_corta < mean(datos_puntuacion_duracion_corta))
+#puntuacion mayores que la media
+sum(datos_puntuacion > mean(datos_puntuacion))
+sum(datos_puntuacion_duracion_larga > mean(datos_puntuacion_duracion_larga))
+sum(datos_puntuacion_duracion_corta > mean(datos_puntuacion_duracion_corta))
